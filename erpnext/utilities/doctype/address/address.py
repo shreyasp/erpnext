@@ -126,11 +126,9 @@ def has_website_permission(doc, ptype, user, verbose=False):
 	return False
 
 def get_address_templates(address):
-	template = frappe.db.get_value("Address Template", \
-		{"country": address.get("country")}, "template")
+	template = frappe.db.get_value("Address Template", {"country": address.get("country")}, "template")
 	if not template:
-		template = frappe.db.get_value("Address Template", \
-			{"is_default": 1}, "template")
+		template = frappe.db.get_value("Address Template", {"is_default": 1}, "template")
 
 	if not template:
 		frappe.throw(_("No default Address Template found. Please create a new one from Setup > Printing and Branding > Address Template."))
@@ -145,8 +143,6 @@ def get_shipping_address(company):
 
 	address_as_dict = frappe.db.get_value("Address", filters=filters, fieldname=fieldname, as_dict=True)
 
-	if not address_as_dict:
-		frappe.throw(_("Please add addresses for the company"))
-	else:
+	if address_as_dict:
 		address_template = get_address_templates(address_as_dict)
 		return address_as_dict.get("name"), frappe.render_template(address_template, address_as_dict)
